@@ -8,12 +8,13 @@ import requests
 
 
 class Blockchain(object):
-    def __init__(self):
+    def __init__(self, difficulty=4):
         self.current_transactions = []
         self.chain = []
         self.nodes = set()  # 去重
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
+        self.difficulty = difficulty
 
     def new_block(self, proof, previous_hash=None):
         block = {
@@ -55,11 +56,10 @@ class Blockchain(object):
 
         return proof
 
-    @staticmethod
-    def valid_proof(prev_hash, proof):
+    def valid_proof(self, prev_hash, proof):
         guess = f'{prev_hash}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000"
+        return guess_hash[:self.difficulty] == "0" * self.difficulty
 
     def valid_chain(self, chain):
         chain_length = len(chain)
