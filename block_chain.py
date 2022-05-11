@@ -8,10 +8,10 @@ import requests
 
 
 class Blockchain(object):
-    def __init__(self, difficulty=4):
+    def __init__(self, difficulty=4):  # 难度+1，困难16倍。
         self.current_transactions = []
         self.chain = []
-        self.nodes = set()  # 去重
+        self.neighbour = set()
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
         self.difficulty = difficulty
@@ -53,12 +53,12 @@ class Blockchain(object):
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
             proof += 1
-
+        print(proof)
         return proof
 
     def valid_proof(self, prev_hash, proof):
         guess = f'{prev_hash}{proof}'.encode()
-        guess_hash = hashlib.sha256(guess).hexdigest()
+        guess_hash = hashlib.sha256(guess).hexdigest()  # 十六进制的哈希。
         return guess_hash[:self.difficulty] == "0" * self.difficulty
 
     def valid_chain(self, chain):
@@ -88,10 +88,8 @@ class Blockchain(object):
         :return: <bool> True if our chain was replaced, False if not
         """
 
-        neighbours = self.nodes
+        neighbours = self.neighbour
         new_chain = None
-
-        # We're only looking for chains longer than ours
         max_length = len(self.chain)
 
         # Grab and verify the chains from all the nodes in our network
@@ -114,7 +112,7 @@ class Blockchain(object):
     def register_node(self, address):
         parsed_url = urlparse(address)
         if parsed_url:
-            self.nodes.add(parsed_url.netloc)
+            self.neighbour.add(parsed_url.netloc)
 
     @staticmethod
     def query_node(node):

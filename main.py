@@ -21,6 +21,7 @@ blockchain = Blockchain()
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
+    # add neighbor nodes to current chain
     values = request.get_json()
 
     nodes = values.get('nodes')
@@ -32,7 +33,7 @@ def register_nodes():
 
     response = {
         'message': 'New nodes have been added',
-        'total_nodes': list(blockchain.nodes),
+        'total_nodes': list(blockchain.neighbour),
     }
     return jsonify(response), 201
 
@@ -92,15 +93,10 @@ def test():
 
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
-    print(111)
     values = request.get_json()
-    # Check that the required fields are in the POST'ed data
     required = ['sender', 'recipient', 'amount']
-    # if not all(k in values for k in required):
-    #     return 'Missing values', 400
-
-    # Create a new Transaction
-    print("v", values)
+    if not all(k in values for k in required):
+        return 'Missing values', 400
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
     response = {'message': f'Transaction will be added to Block {index}'}
