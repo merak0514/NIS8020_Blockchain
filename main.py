@@ -59,14 +59,14 @@ def consensus():
 def mine():
     # We run the proof of work algorithm to get the next proof...
     last_block = blockchain.last_block
-    last_proof = last_block['proof']
-    proof = blockchain.proof_of_work(last_proof)
+    prev_hash = blockchain.hash(last_block)
+    proof = blockchain.proof_of_work(prev_hash)
 
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.
     blockchain.new_transaction(
         sender="0",
-        recipient=node_identifier,
+        recipient=args.port,
         amount=1,
     )
 

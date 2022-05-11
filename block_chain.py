@@ -15,25 +15,6 @@ class Blockchain(object):
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
 
-    def valid_chain(self, chain):
-        chain_length = len(chain)
-        if chain_length == 1:
-            return True
-        counter = 1
-        p1 = chain[counter - 1]  # pointer 1
-        p2 = chain[counter]
-        while True:
-            if self.hash(p1) != p2['previous_hash']:  # 检查哈希
-                return False
-            if not self.valid_proof(p1['proof'], p2['proof']):
-                return False
-            counter += 1
-            if counter >= chain_length:
-                break
-            p1 = p2
-            p2 = chain[counter]
-        return True
-
     def new_block(self, proof, previous_hash=None):
         block = {
             'index': len(self.chain) + 1,
@@ -75,11 +56,30 @@ class Blockchain(object):
         return proof
 
     @staticmethod
-    def valid_proof(last_proof, proof):
-        # 简化版。
-        guess = f'{last_proof}{proof}'.encode()
+    def valid_proof(prev_hash, proof):
+        guess = f'{prev_hash}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
+
+    def valid_chain(self, chain):
+        chain_length = len(chain)
+        if chain_length == 1:
+            return True
+        counter = 1
+        p1 = chain[counter - 1]  # pointer 1
+        p2 = chain[counter]
+        while True:
+            p1_hash = self.hash(p1)
+            if p1_hash != p2['previous_hash']:  # 检查哈希
+                return False
+            if not self.valid_proof(p1_hash, p2['proof']):
+                return False
+            counter += 1
+            if counter >= chain_length:
+                break
+            p1 = p2
+            p2 = chain[counter]
+        return True
 
     def resolve_conflicts(self):
         """
