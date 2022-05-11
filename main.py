@@ -18,6 +18,7 @@ node_identifier = str(uuid4()).replace('-', '')
 # Instantiate the Blockchain
 blockchain = Blockchain()
 
+
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
     values = request.get_json()
@@ -81,6 +82,7 @@ def mine():
         'previous_hash': block['previous_hash'],
     }
     return jsonify(response), 200
+
 
 @app.route('/test', methods=['POST'])
 def test():

@@ -15,17 +15,12 @@ class Blockchain(object):
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
 
-    def register_node(self, address):
-        parsed_url = urlparse(address)
-        if parsed_url:
-            self.nodes.add(parsed_url.netloc)
-
     def valid_chain(self, chain):
         chain_length = len(chain)
         if chain_length == 1:
             return True
         counter = 1
-        p1 = chain[counter-1]  # pointer 1
+        p1 = chain[counter - 1]  # pointer 1
         p2 = chain[counter]
         while True:
             if self.hash(p1) != p2['previous_hash']:  # 检查哈希
@@ -39,9 +34,8 @@ class Blockchain(object):
             p2 = chain[counter]
         return True
 
-
     def new_block(self, proof, previous_hash=None):
-        block = {  # block 的结构应该改成linked node。
+        block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
             'transactions': self.current_transactions,
@@ -117,6 +111,11 @@ class Blockchain(object):
             return True
         return False
 
+    def register_node(self, address):
+        parsed_url = urlparse(address)
+        if parsed_url:
+            self.nodes.add(parsed_url.netloc)
+
     @staticmethod
     def query_node(node):
         response = requests.get(f'http://{node}/chain')
@@ -124,4 +123,3 @@ class Blockchain(object):
             js = response.json()
             return js['length'], js['chain']
         return -1, {}
-
