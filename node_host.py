@@ -45,12 +45,16 @@ def consensus():
     if replaced:
         response = {
             'message': 'Our chain was replaced',
-            'new_chain': blockchain.chain
+            'new_chain': blockchain.chain,
+            'replace_code': 1,
+            'length': len(blockchain.chain)
         }
     else:
         response = {
             'message': 'Our chain is authoritative',
-            'chain': blockchain.chain
+            'chain': blockchain.chain,
+            'replace_code': 0,
+            'length': len(blockchain.chain)
         }
 
     return jsonify(response), 200

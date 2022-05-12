@@ -122,13 +122,11 @@ class Blockchain(object):
         return False
 
     def register_node(self, address):
-        parsed_url = urlparse(address)
-        if parsed_url:
-            self.neighbour.add(parsed_url.netloc)
+        self.neighbour.add(address)
 
     @staticmethod
     def query_node(node):
-        response = requests.get(f'http://{node}/chain')
+        response = requests.get(f'http://0.0.0.0:{node}/chain')
         if response.status_code == 200:
             js = response.json()
             return js['length'], js['chain']
