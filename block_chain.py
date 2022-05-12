@@ -52,12 +52,13 @@ class Blockchain(object):
         return hashlib.sha256(block_string).hexdigest()
 
     def fake_pow(self, last_proof):
-        BASE_TIME = 2.56e-5 * 2  # 模拟测试出来的; *2 是因为模拟出来的是平均值。
+        # BASE_TIME = 2.56e-5 * 2  # 模拟测试出来的; *2 是因为模拟出来的是平均值。
+        BASE_TIME = 2.56e-2 * 2  # 模拟测试出来的; *2 是因为模拟出来的是平均值。
         diff = pow(2, self.difficulty)
         cost_time = random.randint(1, diff)
         real_time = BASE_TIME * cost_time
         sleep(real_time)
-        return
+        return 'fake'
 
     def proof_of_work(self, last_proof):
         proof = 0
@@ -110,8 +111,11 @@ class Blockchain(object):
             if length == -1:
                 print(f"Invalidate node {node}")
                 continue
-            # Check if the length is longer and the chain is valid
-            if length > max_length and self.valid_chain(chain):
+            if length == max_length and self.valid_chain(chain):
+                if random.random() < 0.5:  # 两条链相等则50%的概率接收
+                    max_length = length
+                    new_chain = chain
+            if length > max_length and self.valid_chain(chain):  # 接收长的
                 max_length = length
                 new_chain = chain
 

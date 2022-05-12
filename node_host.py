@@ -65,7 +65,8 @@ def mine():
     # We run the proof of work algorithm to get the next proof...
     last_block = blockchain.last_block
     prev_hash = blockchain.hash(last_block)
-    proof = blockchain.proof_of_work(prev_hash)
+    # proof = blockchain.proof_of_work(prev_hash)
+    proof = blockchain.fake_pow(prev_hash)
 
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.

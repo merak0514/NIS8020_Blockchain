@@ -28,4 +28,4 @@ if __name__ == '__main__':
         # resolve conflicts
         r = re.get(f'http://localhost:{port}/nodes/resolve')
         if r.json()['replace_code']:
-            print(f'Chain replaced, new length is {r.json()["chain_length"]}')
+            print(f'Chain replaced, new length is {r.json()["length"]}')
