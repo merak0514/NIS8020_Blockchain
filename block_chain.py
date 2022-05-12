@@ -2,13 +2,15 @@
 
 import hashlib
 import json
-from time import time
+from time import time, sleep
 from urllib.parse import urlparse
 import requests
+import random
 
 
 class Blockchain(object):
-    def __init__(self, difficulty=4):  # 难度+1，困难16倍。
+    def __init__(self, difficulty=5, mode='fake'):  # 难度+1，困难16倍。
+        self.mode = mode
         self.current_transactions = []
         self.chain = []
         self.neighbour = set()
@@ -49,6 +51,14 @@ class Blockchain(object):
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
+    def fake_pow(self, last_proof):
+        BASE_TIME = 2.56e-5 * 2  # 模拟测试出来的; *2 是因为模拟出来的是平均值。
+        diff = pow(2, self.difficulty)
+        cost_time = random.randint(1, diff)
+        real_time = BASE_TIME * cost_time
+        sleep(real_time)
+        return
+
     def proof_of_work(self, last_proof):
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
@@ -62,6 +72,8 @@ class Blockchain(object):
         return guess_hash[:self.difficulty] == "0" * self.difficulty
 
     def valid_chain(self, chain):
+        if self.mode == 'fake':  # fake mode
+            return True
         chain_length = len(chain)
         if chain_length == 1:
             return True
