@@ -53,12 +53,13 @@ class Blockchain(object):
 
     def fake_pow(self, last_proof):
         # BASE_TIME = 2.56e-5 * 2  # 模拟测试出来的; *2 是因为模拟出来的是平均值。
-        BASE_TIME = 2.56e-2 * 2  # 模拟测试出来的; *2 是因为模拟出来的是平均值。
-        diff = pow(2, self.difficulty)
-        cost_time = random.randint(1, diff)
-        real_time = BASE_TIME * cost_time
+        BASE_TIME = 1e-3  # 每一轮的耗时，预计16轮出块
+        difficulty = pow(2, self.difficulty)
+        real_time = BASE_TIME * difficulty
         sleep(real_time)
-        return 'fake'
+        if random.random() < 1/256:  # 成功出块
+            return 1, 'success'
+        return 0, 'fail'  # 失败出块
 
     def proof_of_work(self, last_proof):
         proof = 0

@@ -62,30 +62,36 @@ def consensus():
 
 @app.route('/mine', methods=['GET'])
 def mine():
-    # We run the proof of work algorithm to get the next proof...
+    q = 16  # 每次轮可以做的RO查询数
     last_block = blockchain.last_block
     prev_hash = blockchain.hash(last_block)
     # proof = blockchain.proof_of_work(prev_hash)
-    proof = blockchain.fake_pow(prev_hash)
+    for _ in range(q):
+        # 挖一下
+        success, proof = blockchain.fake_pow(prev_hash)
+        if success:
+            # We must receive a reward for finding the proof.
+            blockchain.new_transaction(
+                sender="0",
+                recipient=args.port,
+                amount=1,
+            )
 
-    # We must receive a reward for finding the proof.
-    # The sender is "0" to signify that this node has mined a new coin.
-    blockchain.new_transaction(
-        sender="0",
-        recipient=args.port,
-        amount=1,
-    )
+            # Forge the new Block by adding it to the chain
+            previous_hash = blockchain.hash(last_block)
+            block = blockchain.new_block(proof, previous_hash)
 
-    # Forge the new Block by adding it to the chain
-    previous_hash = blockchain.hash(last_block)
-    block = blockchain.new_block(proof, previous_hash)
-
+            response = {
+                'found': True,
+                'message': "New Block Forged",
+                'index': block['index'],
+                'transactions': block['transactions'],
+                'proof': block['proof'],
+                'previous_hash': block['previous_hash'],
+            }
+            return jsonify(response), 200
     response = {
-        'message': "New Block Forged",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
+        'found': False
     }
     return jsonify(response), 200
 

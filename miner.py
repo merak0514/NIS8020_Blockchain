@@ -19,11 +19,9 @@ if __name__ == '__main__':
     re.post(f'http://localhost:{port}/nodes/register', json={'nodes': neighbours},
             headers={'Content-Type': 'application/json'})
     while True:
-        response = re.get(f'http://localhost:{port}/mine')
-        if response.status_code != 200:
-            print('System error')
-            break
-        print('index', response.json()['index'])
+        response_js = re.get(f'http://localhost:{port}/mine').json()
+        if response_js['found']:
+            print('index', response_js['index'])
 
         # resolve conflicts
         r = re.get(f'http://localhost:{port}/nodes/resolve')
