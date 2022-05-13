@@ -9,8 +9,8 @@ import random
 
 
 class Blockchain(object):
-    def __init__(self, difficulty=5, mode='fake'):  # 难度+1，困难16倍。
-        self.mode = mode
+    def __init__(self, difficulty=5, fake: bool=False):  # 难度+1，困难16倍。
+        self.fake = fake
         self.current_transactions = []
         self.chain = []
         self.neighbour = set()
@@ -74,7 +74,7 @@ class Blockchain(object):
         return guess_hash[:self.difficulty] == "0" * self.difficulty
 
     def valid_chain(self, chain):
-        if self.mode == 'fake':  # fake mode
+        if self.fake:  # fake mode
             return True
         chain_length = len(chain)
         if chain_length == 1:

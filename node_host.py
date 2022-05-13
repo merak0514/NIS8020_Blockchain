@@ -12,11 +12,11 @@ import argparse
 # Instantiate our Node
 app = Flask(__name__)
 
-# Generate a globally unique address for this node
-node_identifier = str(uuid4()).replace('-', '')
+FAKE = True  # To protect your computer, use this to enable fake mining,
+# which will use time.sleep to simulate the mining of a block.
 
 # Instantiate the Blockchain
-blockchain = Blockchain()
+blockchain = Blockchain(fake=FAKE)
 
 
 @app.route('/nodes/register', methods=['POST'])
