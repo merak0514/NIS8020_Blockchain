@@ -5,14 +5,11 @@ from tqdm import tqdm
 import argparse
 
 
-def main(port_id):
+def main(port):
     # Try to estimate the speed of mining a block, aka the growth of the blockchain.
-    # all_nodes = ['5001', '5002', '5003', '5004', '5005', '5006', '5007', '5008', '5009', '5010']
-    all_nodes = ['5001', '5002']
-    port = all_nodes[port_id]
-    neighbours = all_nodes[0: port_id] + all_nodes[port_id+1:]
-    print("Adding neighbours:", neighbours)
-    re.post(f'http://localhost:{port}/nodes/register', json={'nodes': neighbours},
+    all_nodes = ['5001', '5002', '5003', '5004', '5005', '5006', '5007', '5008', '5009', '5010']
+    print("Adding neighbours:", all_nodes)
+    re.post(f'http://localhost:{port}/nodes/register', json={'nodes': all_nodes},
             headers={'Content-Type': 'application/json'})
     while True:
         response_js = re.get(f'http://localhost:{port}/mine?type=malicious').json()
@@ -24,6 +21,6 @@ def main(port_id):
 if __name__ == '__main__':
     time.sleep(1)
     parser = argparse.ArgumentParser()
-    parser.add_argument('port_id', type=int, default='5001')
+    parser.add_argument('port', type=str, default='5001')
     args = parser.parse_args()
-    main(port_id=args.port_id)
+    main(port=args.port)
