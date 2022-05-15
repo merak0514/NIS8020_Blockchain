@@ -61,6 +61,9 @@ def consensus():
 @app.route('/mine', methods=['GET'])
 def mine():
     q = 16  # 每次轮可以做的RO查询数
+
+    type_ = request.args.get('type')
+
     last_block = blockchain.last_block
     prev_hash = blockchain.hash(last_block)
     # proof = blockchain.proof_of_work(prev_hash)
@@ -69,15 +72,21 @@ def mine():
         success, proof = blockchain.fake_pow(prev_hash)
         if success:
             # We must receive a reward for finding the proof.
+            if type_ == 'malicious':
+                income = 100
+                recipient = 'malicious'
+            else:
+                income = 1
+                recipient = current_port
             blockchain.new_transaction(
                 sender="0",
-                recipient=current_port,
-                amount=1,
+                recipient=recipient,
+                amount=income,
             )
 
             # Forge the new Block by adding it to the chain
             previous_hash = blockchain.hash(last_block)
-            block = blockchain.new_block(proof, previous_hash)
+            block = blockchain.new_block(proof, previous_hash, creator=type_)
 
             response = {
                 'found': True,

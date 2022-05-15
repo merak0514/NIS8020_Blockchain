@@ -18,13 +18,14 @@ class Blockchain(object):
         self.new_block(previous_hash=1, proof=100)
         self.difficulty = difficulty
 
-    def new_block(self, proof, previous_hash=None):
+    def new_block(self, proof, previous_hash=None, creator=None):
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
+            'creator': creator,
         }
 
         # Reset the current list of transactions
@@ -110,7 +111,7 @@ class Blockchain(object):
         for node in neighbours:
             length, chain = self.query_node(node)
             if length == -1:
-                print(f"Invalidate node {node}")
+                # print(f"Invalidate node {node}")  # enable to debug
                 continue
             # Current tie breaking strategy: keep the first one.
             # if length == max_length and self.valid_chain(chain):
@@ -132,7 +133,7 @@ class Blockchain(object):
 
     @staticmethod
     def query_node(node):
-        response = requests.get(f'http://0.0.0.0:{node}/chain')
+        response = requests.get(f'http://0.0.0.0:{node}/chain')  # 所以就算节点不存在也不会中断程序。
         if response.status_code == 200:
             js = response.json()
             return js['length'], js['chain']
