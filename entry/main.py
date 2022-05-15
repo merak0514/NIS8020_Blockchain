@@ -1,6 +1,5 @@
 """Created: 2022/5/14"""
-import node_host
-import threading
+from host import node_host
 import multiprocessing
 
 

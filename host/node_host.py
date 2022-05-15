@@ -1,14 +1,10 @@
 """Created: 2022/5/10"""
-import hashlib
-import json
-from textwrap import dedent
+# host for miners
 from time import time
-from uuid import uuid4
 
 from flask import Flask, jsonify, request
-from block_chain import Blockchain
+from model import Blockchain
 import argparse
-import threading
 
 # Instantiate our Node
 app = Flask(__name__)

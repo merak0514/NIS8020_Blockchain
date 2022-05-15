@@ -1,8 +1,9 @@
 """Created: 2022/5/14"""
 # An honest observer that starts at very beginning, and will follow the rules honestly. It cannot mine.
+# host for observer
 from flask import Flask, jsonify, request
 from time import time
-from block_chain import Blockchain
+from model import Blockchain
 
 app = Flask(__name__)
 

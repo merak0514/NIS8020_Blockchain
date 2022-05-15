@@ -1,4 +1,5 @@
 """Created: 2022/5/12"""
+# start an honest miner connected to the args.port_id port.
 import requests as re
 import time
 from tqdm import tqdm
