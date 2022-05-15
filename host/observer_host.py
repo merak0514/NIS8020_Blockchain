@@ -18,10 +18,17 @@ last_t = time()
 
 @app.route('/summarize', methods=['GET'])
 def summarize():
+    def compute_malicious():
+        m_count = 0  # malicious count
+        for block in blockchain.chain:
+            if block['creator'] == 'malicious':
+                m_count += 1
+        return m_count
     global count, last_t
     count = len(blockchain.chain)
     now = time()
     response = {
+        'malicious_count': compute_malicious(),
         'period_speed (block/second)': f'{count / (now - last_t):.2f}',
         'whole speed (block/second)': f'{count / (now - t0):.2f}',
         'block length': f'{count}',
