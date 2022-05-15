@@ -19,11 +19,12 @@ if __name__ == '__main__':
     re.post(f'http://localhost:{port}/nodes/register', json={'nodes': neighbours},
             headers={'Content-Type': 'application/json'})
     while True:
-        response_js = re.get(f'http://localhost:{port}/mine').json()
-        if response_js['found']:
-            print('index', response_js['index'])
-
         # resolve conflicts
         r = re.get(f'http://localhost:{port}/nodes/resolve')
         if r.json()['replace_code']:
             print(f'Chain replaced, new length is {r.json()["length"]}')
+
+        response_js = re.get(f'http://localhost:{port}/mine').json()
+        if response_js['found']:
+            print('index', response_js['index'])
+

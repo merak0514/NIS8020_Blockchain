@@ -8,6 +8,7 @@ from uuid import uuid4
 from flask import Flask, jsonify, request
 from block_chain import Blockchain
 import argparse
+import threading
 
 # Instantiate our Node
 app = Flask(__name__)
@@ -17,7 +18,8 @@ FAKE = True  # To protect your computer, use this to enable fake mining,
 
 # Instantiate the Blockchain
 blockchain = Blockchain(fake=FAKE)
-
+current_port = '5001'  # 可以通过调用run来改变这个。
+t0 = time()  # starting time
 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
@@ -73,7 +75,7 @@ def mine():
             # We must receive a reward for finding the proof.
             blockchain.new_transaction(
                 sender="0",
-                recipient=args.port,
+                recipient=current_port,
                 amount=1,
             )
 
@@ -117,14 +119,21 @@ def new_transaction():
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
-        'chain': blockchain.chain,
         'length': len(blockchain.chain),
+        'chain': blockchain.chain,
     }
     return jsonify(response), 200
+
+
+def run(port):
+    global current_port, t0
+    current_port = port
+    t0 = time()
+    app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('port', type=int)
     args = parser.parse_args()
-    app.run(host='0.0.0.0', port=args.port)
+    run(args.port)
