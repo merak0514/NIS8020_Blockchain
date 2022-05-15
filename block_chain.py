@@ -112,10 +112,11 @@ class Blockchain(object):
             if length == -1:
                 print(f"Invalidate node {node}")
                 continue
-            if length == max_length and self.valid_chain(chain):
-                if random.random() < 0.5:  # 两条链相等则50%的概率接收
-                    max_length = length
-                    new_chain = chain
+            # Current tie breaking strategy: keep the first one.
+            # if length == max_length and self.valid_chain(chain):
+            #     if random.random() < 0.5:  # 两条链相等则50%的概率接收
+            #         max_length = length
+            #         new_chain = chain
             if length > max_length and self.valid_chain(chain):  # 接收长的
                 max_length = length
                 new_chain = chain
