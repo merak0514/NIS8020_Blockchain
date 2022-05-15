@@ -17,6 +17,7 @@ blockchain = Blockchain(fake=FAKE)
 current_port = '5001'  # 可以通过调用run来改变这个。
 t0 = time()  # starting time
 
+
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
     # add neighbor nodes to current chain
@@ -128,6 +129,24 @@ def full_chain():
         'chain': blockchain.chain,
     }
     return jsonify(response), 200
+
+
+@app.route('/nodes/compute_m', methods=['GET'])
+def compute_malicious():
+    """计算连续的恶意节点数量"""
+    max_c = 0
+    c = 0  # malicious count
+    for block in blockchain.chain:
+        if block['creator'] == 'malicious':
+            if c == 0:
+                c = 1
+            elif c > 0:
+                c += 1
+        else:
+            max_c = max(max_c, c)
+            c = 0
+    max_c = max(max_c, c)
+    return max_c
 
 
 def run(port):

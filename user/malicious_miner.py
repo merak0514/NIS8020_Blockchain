@@ -11,11 +11,15 @@ def main(port):
     print("Adding neighbours:", all_nodes)
     re.post(f'http://localhost:{port}/nodes/register', json={'nodes': all_nodes},
             headers={'Content-Type': 'application/json'})
+    count = 0
     while True:
         response_js = re.get(f'http://localhost:{port}/mine?type=malicious').json()
         if response_js['found']:
             print('index', response_js['index'])
-        # do not try to resolve conflicts
+        count += 1
+        # try to resolve conflicts much less
+        if count % 16*50 == 0:  # 数学期望100轮的时候，如果还没有赢，就拉取一下最新区块，重新攻击。
+            re.get(f'http://localhost:{port}/nodes/resolve')
 
 
 if __name__ == '__main__':

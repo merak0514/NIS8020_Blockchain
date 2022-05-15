@@ -25,7 +25,10 @@ def main():
         #     print(f'Chain replaced, new length is {r.json()["length"]}')
         r2 = re.get(f'http://localhost:{port}/summary')
         print('Summary: ', r2.json())
-        time.sleep(5)
+        if r2.json()['max_malicious_count'] >= 3:
+            print("Malicious Win!")
+            input()
+        time.sleep(1)
 
 
 if __name__ == '__main__':
