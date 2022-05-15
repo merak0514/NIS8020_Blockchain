@@ -13,10 +13,11 @@ current_port = '6000'  # 可以通过调用run来改变这个。
 
 t0 = time()  # starting time
 count = 1  # 计数器
+last_count = 1  # 计数器
 last_t = time()
 
 
-@app.route('/summarize', methods=['GET'])
+@app.route('/summary', methods=['GET'])
 def summarize():
     def compute_malicious():
         m_count = 0  # malicious count
@@ -24,19 +25,19 @@ def summarize():
             if block['creator'] == 'malicious':
                 m_count += 1
         return m_count
-    global count, last_t
+    global count, last_t, last_count
     count = len(blockchain.chain)
     now = time()
     response = {
         'malicious_count': compute_malicious(),
-        'period_speed (block/second)': f'{count / (now - last_t):.2f}',
-        'whole speed (block/second)': f'{count / (now - t0):.2f}',
-        'block length': f'{count}',
-        'total_nodes': list(blockchain.neighbour),
+        'period_speed (block/second)': f'{(count - last_count) / (now - last_t):.2f}',
+        'whole_speed (block/second)': f'{count / (now - t0):.2f}',
+        'block_length': f'{count}',
         'period_time': now-last_t,
         'whole_time': now-t0
     }
     last_t = now
+    last_count = count
     return response, 200
 
 
@@ -90,7 +91,7 @@ def full_chain():
     return jsonify(response), 200
 
 
-def run(port):
+def run(port=None):
     global current_port, t0
     current_port = port
     t0 = time()
