@@ -21,8 +21,11 @@ def main():
     while True:
         # resolve conflicts
         r = re.get(f'http://localhost:{port}/nodes/resolve')
-        if r.json()['replace_code']:
-            print(f'Chain replaced, new length is {r.json()["length"]}')
+        # if r.json()['replace_code']:
+        #     print(f'Chain replaced, new length is {r.json()["length"]}')
+        r2 = re.get(f'http://localhost:{port}/summary')
+        print('Summary: ', r2.json())
+        time.sleep(5)
 
 
 if __name__ == '__main__':
