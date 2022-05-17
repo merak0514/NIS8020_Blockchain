@@ -103,9 +103,11 @@ class Blockchain(object):
         :return: <bool> True if our chain was replaced, False if not
         """
 
-        neighbours = self.neighbour
+        neighbours = list(self.neighbour)
         new_chain = None
         max_length = len(self.chain)
+
+        random.shuffle(neighbours)
 
         # Grab and verify the chains from all the nodes in our network
         for node in neighbours:
