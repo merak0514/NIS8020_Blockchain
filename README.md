@@ -6,6 +6,8 @@ A simulation of blockchain, POW.
 
 Tie breaking 策略：先来的先接受。
 
+参考：https://medium.com/@vanflymen/learn-blockchains-by-building-one-117428612f46
+
 ## observer node
 
 这是模拟一个诚实节点，但是不会进行挖矿，在创世就存在，且中途不会退出。
@@ -45,4 +47,15 @@ Tie breaking 策略：先来的先接受。
 
     python3 host/observer_host.py 5001 <port>
     python3 user/observer.py <port>
+
+# 挖矿模拟
+
+    python3 host/node_host.py 5001
+    python3 entry/mine.py 
+
+# 多线程运行模拟分叉攻击
+
+    python3 entry/main.py
+    python3 user/observer.py  # at another terminal.
+
 
